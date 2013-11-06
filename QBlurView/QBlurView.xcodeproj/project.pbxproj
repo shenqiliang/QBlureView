@@ -206,6 +206,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = brightshen;
 				TargetAttributes = {
+					4F7180491828D14D004DD36E = {
+						DevelopmentTeam = 8ADSWMVK3V;
+					};
 					4F7180641828D14D004DD36E = {
 						TestTargetID = 4F7180491828D14D004DD36E;
 					};
@@ -376,10 +379,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer: DIAO PANWU (UKADS4VAJK)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QBlurView/QBlurView-Prefix.pch";
 				INFOPLIST_FILE = "QBlurView/QBlurView-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -389,10 +395,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer: DIAO PANWU (UKADS4VAJK)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QBlurView/QBlurView-Prefix.pch";
 				INFOPLIST_FILE = "QBlurView/QBlurView-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -458,6 +467,7 @@
 				4F7180781828D14D004DD36E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4F7180791828D14D004DD36E /* Build configuration list for PBXNativeTarget "QBlurViewTests" */ = {
 			isa = XCConfigurationList;
@@ -466,6 +476,7 @@
 				4F71807B1828D14D004DD36E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -8,9 +8,15 @@
 
 #import "QBlurView.h"
 #import <Accelerate/Accelerate.h>
+
+@interface QBlurView()
+
+@property(atomic, strong) UIImage *effectImage;
+
+@end
+
 @implementation QBlurView{
-    UIImage *effectImage;
-    dispatch_group_t group;
+    dispatch_source_t source;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -21,9 +27,26 @@
         self.clearsContextBeforeDrawing = YES;
         _blurRadius = 10;
         _saturationDeltaFactor = 1.0;
-        group = dispatch_group_create();
+        source = dispatch_source_create(DISPATCH_SOURCE_TYPE_DATA_OR, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+        __weak id weakSelf = self;
+        dispatch_source_set_event_handler(source, ^{
+            [weakSelf refresh];
+        });
+        dispatch_resume(source);
     }
     return self;
+}
+
+- (void)setSynchronized:(BOOL)synchronized{
+    if (_synchronized!=synchronized) {
+        _synchronized = synchronized;
+        if (_synchronized) {
+            dispatch_suspend(source);
+        }
+        else{
+            dispatch_resume(source);
+        }
+    }
 }
 
 - (void)setFrame:(CGRect)frame{
@@ -41,17 +64,18 @@
     [self setNeedsRefresh];
 }
 
+- (void)setBounds:(CGRect)bounds{
+    [super setBounds:bounds];
+    [self setNeedsRefresh];
+}
+
 - (void)setNeedsRefresh{
     if (_synchronized) {
         [self setNeedsDisplay];
     }
     else{
-        if (group) {
-            if(dispatch_group_wait(group, DISPATCH_TIME_NOW)==0){
-                dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-                    [self refresh];
-                });
-            }
+        if (source) {
+            dispatch_source_merge_data(source, 1);
         }
     }
 }
@@ -80,7 +104,7 @@
     visibleRect.origin.x += self.frame.origin.x;
     
     // Drawing code
-    UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, [[UIScreen mainScreen] scale]);
+    UIGraphicsBeginImageContextWithOptions(visibleRect.size, NO, [[UIScreen mainScreen] scale]);
     CGContextRef effectInContext = UIGraphicsGetCurrentContext();
     vImage_Buffer effectInBuffer;
     effectInBuffer.data     = CGBitmapContextGetData(effectInContext);
@@ -150,11 +174,11 @@
     
     
     if (!effectImageBuffersAreSwapped)
-        effectImage = UIGraphicsGetImageFromCurrentImageContext();
+        self.effectImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
     if (effectImageBuffersAreSwapped)
-        effectImage = UIGraphicsGetImageFromCurrentImageContext();
+        self.effectImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
     if (!_synchronized) {
@@ -169,11 +193,11 @@
     if (_synchronized) {
         [self refresh];
     }
-    [effectImage drawAtPoint:CGPointZero];
+    [self.effectImage drawAtPoint:CGPointZero];
 }
 
 - (void)dealloc{
-    dispatch_release(group);
+    dispatch_release(source);
 }
 
 @end
